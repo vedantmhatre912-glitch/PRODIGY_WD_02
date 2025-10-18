@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .stopwatch {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .time {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .laps {
+            margin-top: 20px;
+        }
+        .lap {
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="stopwatch">
+        <div class="time" id="display">00:00:00</div>
+        <button onclick="startStop()">Start/Stop</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="lap()">Lap</button>
+        <div class="laps" id="laps"></div>
+    </div><script>
+    let startTime = 0;
+    let elapsedTime = 0;
+    let interval;
+    let running = false;
+
+    function startStop() {
+        if (!running) {
+            startTime = Date.now() - elapsedTime;
+            interval = setInterval(updateTime, 10);
+            running = true;
+        } else {
+            clearInterval(interval);
+            running = false;
+        }
+    }
+
+    function updateTime() {
+        elapsedTime = Date.now() - startTime;
+        const time = new Date(elapsedTime);
+        const minutes = String(time.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(time.getUTCSeconds()).padStart(2, '0');
+        const milliseconds = String(Math.floor(time.getUTCMilliseconds() / 10)).padStart(2, '0');
+        document.getElementById('display').innerText = `${minutes}:${seconds}:${milliseconds}`;
+    }
+
+    function reset() {
+        clearInterval(interval);
+        elapsedTime = 0;
+        running = false;
+        document.getElementById('display').innerText = "00:00:00";
+        document.getElementById('laps').innerHTML = "";
+    }
+
+    function lap() {
+        if (running) {
+            const lapTime = document.getElementById('display').innerText;
+            const lapElement = document.createElement('div');
+            lapElement.className = 'lap';
+            lapElement.innerText = `Lap: ${lapTime}`;
+            document.getElementById('laps').appendChild(lapElement);
+        }
+    }
+</script>
+
+</body>
+</html>
